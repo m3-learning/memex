@@ -5,10 +5,10 @@ import os
 #     requirements = f.read().splitlines()
 
 setup(
-    name="memex",
+    name="sci-memex",
     version="0.0.1",
     packages=find_packages(where="src"),
-    url="https://github.com/jagar2/m3_learning.git",
+    url="https://github.com/m3-learning/memex",
     # install_requires=requirements,
     license=" BSD-3-Clause",
     author="Joshua C. Agar",
