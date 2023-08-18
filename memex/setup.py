@@ -5,8 +5,8 @@ import os
 #     requirements = f.read().splitlines()
 
 setup(
-    name="sci-memex",
-    version="0.0.1",
+    name="memex",
+    version="0.0.2",
     packages=find_packages(where="src"),
     url="https://github.com/m3-learning/memex",
     # install_requires=requirements,
