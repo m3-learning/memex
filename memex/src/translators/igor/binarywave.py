@@ -31,7 +31,7 @@ import struct as _struct
 import sys as _sys
 import types as _types
 
-import numpy as _numpy
+import numpy as np
 
 from . import LOG as _LOG
 from .struct import Structure as _Structure
@@ -50,14 +50,14 @@ from .util import checksum as _checksum
 # So we roll our own types.  See
 #   http://docs.scipy.org/doc/numpy/user/basics.rec.html
 #   http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html
-complexInt8 = _numpy.dtype([('real', _numpy.int8), ('imag', _numpy.int8)])
-complexInt16 = _numpy.dtype([('real', _numpy.int16), ('imag', _numpy.int16)])
-complexInt32 = _numpy.dtype([('real', _numpy.int32), ('imag', _numpy.int32)])
-complexUInt8 = _numpy.dtype([('real', _numpy.uint8), ('imag', _numpy.uint8)])
-complexUInt16 = _numpy.dtype(
-    [('real', _numpy.uint16), ('imag', _numpy.uint16)])
-complexUInt32 = _numpy.dtype(
-    [('real', _numpy.uint32), ('imag', _numpy.uint32)])
+complexInt8 = np.dtype([('real', np.int8), ('imag', np.int8)])
+complexInt16 = np.dtype([('real', np.int16), ('imag', np.int16)])
+complexInt32 = np.dtype([('real', np.int32), ('imag', np.int32)])
+complexUInt8 = np.dtype([('real', np.uint8), ('imag', np.uint8)])
+complexUInt16 = np.dtype(
+    [('real', np.uint16), ('imag', np.uint16)])
+complexUInt32 = np.dtype(
+    [('real', np.uint32), ('imag', np.uint32)])
 
 
 class StaticStringField (_DynamicField):
@@ -107,27 +107,27 @@ class NullStaticStringField (StaticStringField):
 # From IgorMath.h
 TYPE_TABLE = {        # (key: integer flag, value: numpy dtype)
     0:None,           # Text wave, not handled in ReadWave.c
-    1:_numpy.complex, # NT_CMPLX, makes number complex.
-    2:_numpy.float32, # NT_FP32, 32 bit fp numbers.
-    3:_numpy.complex64,
-    4:_numpy.float64, # NT_FP64, 64 bit fp numbers.
-    5:_numpy.complex128,
-    8:_numpy.int8,    # NT_I8, 8 bit signed integer. Requires Igor Pro
+    1:complex, # NT_CMPLX, makes number complex.
+    2:np.float32, # NT_FP32, 32 bit fp numbers.
+    3:np.complex64,
+    4:np.float64, # NT_FP64, 64 bit fp numbers.
+    5:np.complex128,
+    8:np.int8,    # NT_I8, 8 bit signed integer. Requires Igor Pro
                       # 2.0 or later.
     9:complexInt8,
-    0x10:_numpy.int16,# NT_I16, 16 bit integer numbers. Requires Igor
+    0x10:np.int16,# NT_I16, 16 bit integer numbers. Requires Igor
                       # Pro 2.0 or later.
     0x11:complexInt16,
-    0x20:_numpy.int32,# NT_I32, 32 bit integer numbers. Requires Igor
+    0x20:np.int32,# NT_I32, 32 bit integer numbers. Requires Igor
                       # Pro 2.0 or later.
     0x21:complexInt32,
 #   0x40:None,        # NT_UNSIGNED, Makes above signed integers
 #                     # unsigned. Requires Igor Pro 3.0 or later.
-    0x48:_numpy.uint8,
+    0x48:np.uint8,
     0x49:complexUInt8,
-    0x50:_numpy.uint16,
+    0x50:np.uint16,
     0x51:complexUInt16,
-    0x60:_numpy.uint32,
+    0x60:np.uint32,
     0x61:complexUInt32,
 }
 
@@ -285,13 +285,13 @@ class DynamicWaveDataField1 (_DynamicField):
         if type_:
             self.shape = self._get_shape(bin_header, wave_header)
         else:  # text wave
-            type_ = _numpy.dtype('S1')
+            type_ = np.dtype('S1')
             self.shape = (self.data_size,)
         # dtype() wrapping to avoid numpy.generic and
         # getset_descriptor issues with the builtin numpy types
         # (e.g. int32).  It has no effect on our local complex
         # integers.
-        self.dtype = _numpy.dtype(type_).newbyteorder(
+        self.dtype = np.dtype(type_).newbyteorder(
             wave_structure.byte_order)
         if (version == 3 and
             self.count > 0 and
@@ -333,7 +333,7 @@ class DynamicWaveDataField1 (_DynamicField):
     def unpack(self, stream):
         data_b = stream.read(self.data_size)
         try:
-            data = _numpy.ndarray(
+            data = np.ndarray(
                 shape=self.shape,
                 dtype=self.dtype,
                 buffer=data_b,
@@ -516,7 +516,7 @@ class DynamicStringIndicesDataField (_DynamicField):
                 strings.append(b'')
             else:
                 raise ValueError((offset, wave_data['sIndices']))
-        wdata = _numpy.array(strings)
+        wdata = np.array(strings)
         shape = [n for n in wave_header['nDim'] if n > 0] or (0,)
         try:
             wdata = wdata.reshape(shape)

@@ -15,16 +15,22 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with igor.  If not, see <http://www.gnu.org/licenses/>.
 
-"Interface for reading binary IGOR files."
+# "Interface for reading binary IGOR files."
 
 __version__ = '0.3'
 
 
 import logging as _logging
 
-
 LOG = _logging.getLogger('igor')
 LOG.setLevel(_logging.ERROR)
 LOG.addHandler(_logging.StreamHandler())
 LOG.handlers[-1].setFormatter(
     _logging.Formatter('%(name)s - %(levelname)s - %(message)s'))
+
+from . import util
+from . import binarywave
+from . import packed
+from . import script
+from . import struct
+from . import igorpy
